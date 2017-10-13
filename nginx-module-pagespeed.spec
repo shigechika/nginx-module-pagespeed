@@ -131,32 +131,6 @@ BANNER
 fi
 
 %changelog
-* Tue Jul 11 2017 Konstantin Pavlov <thresh@nginx.com>
-- base version updated to 1.12.1
-
-* Wed Apr 12 2017 Konstantin Pavlov <thresh@nginx.com>
-- base version updated to 1.12.0
-
-* Tue Apr  4 2017 Konstantin Pavlov <thresh@nginx.com>
-- base version updated to 1.11.13
-
-* Fri Mar 24 2017 Konstantin Pavlov <thresh@nginx.com>
-- base version updated to 1.11.12
-
-* Tue Mar 21 2017 Konstantin Pavlov <thresh@nginx.com>
-- base version updated to 1.11.11
-
-* Tue Jan 24 2017 Konstantin Pavlov <thresh@nginx.com>
-- base version updated to 1.11.9
-
-* Tue Dec 27 2016 Konstantin Pavlov <thresh@nginx.com>
-- base version updated to 1.11.8
-
-* Tue Dec 13 2016 Konstantin Pavlov <thresh@nginx.com>
-- base version updated to 1.11.7
-
-* Tue Nov 15 2016 Konstantin Pavlov <thresh@nginx.com>
-- base version updated to 1.11.6
-
-* Mon Oct 10 2016 Andrei Belov <defan@nginx.com>
-- base version updated to 1.11.5
+* Fri Oct 13 2017 Shigechika AIKAWA
+- base version is nginx-1.12.1 and pagespeed-1.12.34.2.
+- referenced nginx module spec files.
