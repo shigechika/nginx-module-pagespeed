@@ -50,7 +50,7 @@ License: 2-clause BSD-like license
 BuildRoot: %{_tmppath}/%{name}-%{main_version}-%{main_release}-root
 BuildRequires: zlib-devel
 BuildRequires: pcre-devel
-Requires: nginx == %{?epoch:%{epoch}:}1.12.1-1%{?dist}.ngx
+Requires: nginx == %{?epoch:%{epoch}:}%{main_version}-1%{?dist}.ngx
 
 %description
 nginx pagespeed dynamic module.
