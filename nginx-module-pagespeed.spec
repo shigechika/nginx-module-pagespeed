@@ -2,9 +2,6 @@
 %define nginx_user nginx
 %define nginx_group nginx
 
-BuildRequires: curl
-Requires: curl
-
 %if 0%{?rhel} || 0%{?amzn}
 %define _group System Environment/Daemons
 BuildRequires: openssl-devel
@@ -16,18 +13,26 @@ BuildRequires: libopenssl-devel
 %endif
 
 %if 0%{?rhel} == 7
+BuildRequires: redhat-lsb-core
 %define epoch 1
 Epoch: %{epoch}
+%define os_minor %(lsb_release -rs | cut -d '.' -f 2)
+%if %{os_minor} >= 4
+%define dist .el7_4
+%else
+%define dist .el7
+%endif
 %endif
 
-%define main_version 1.12.1
+%define main_version 1.12.2
 %define main_release 1%{?dist}.ngx
+%define pagespeed_version 1.12.34.2
 
 %define bdir %{_builddir}/%{name}-%{main_version}
 
 Summary: nginx pagespeed dynamic module
 Name: nginx-module-pagespeed
-Version: 1.12.1
+Version: 1.12.2
 Release: 1%{?dist}.ngx
 Vendor: Nginx, Inc.
 URL: http://nginx.org/
@@ -35,8 +40,8 @@ Group: %{_group}
 
 Source0: http://nginx.org/download/nginx-%{main_version}.tar.gz
 Source1: COPYRIGHT
-Source2: https://github.com/pagespeed/ngx_pagespeed/archive/v1.12.34.2-stable.tar.gz
-Source3: https://dl.google.com/dl/page-speed/psol/1.12.34.2-x64.tar.gz
+Source2: https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
+Source3: https://dl.google.com/dl/page-speed/psol/%{pagespeed_version}-x64.tar.gz
 
 
 
@@ -131,6 +136,9 @@ BANNER
 fi
 
 %changelog
+* Fri Oct 21 2017 Shigechika AIKAWA
+- base on nginx-1.12.2 and pagespeed-1.12.34.2.
+
 * Fri Oct 13 2017 Shigechika AIKAWA
-- base version is nginx-1.12.1 and pagespeed-1.12.34.2.
+- base on nginx-1.12.1 and pagespeed-1.12.34.2.
 - referenced nginx module spec files.
