@@ -2,6 +2,8 @@
 %define nginx_user nginx
 %define nginx_group nginx
 
+BuildRequires: curl
+
 %if 0%{?rhel} || 0%{?amzn}
 %define _group System Environment/Daemons
 BuildRequires: openssl-devel
@@ -26,7 +28,7 @@ Epoch: %{epoch}
 
 %define main_version 1.12.2
 %define main_release 1%{?dist}.ngx
-%define pagespeed_version 1.12.34.2
+%define pagespeed_version 1.12.34.3
 
 %define bdir %{_builddir}/%{name}-%{main_version}
 
@@ -41,7 +43,6 @@ Group: %{_group}
 Source0: http://nginx.org/download/nginx-%{main_version}.tar.gz
 Source1: COPYRIGHT
 Source2: https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
-Source3: https://dl.google.com/dl/page-speed/psol/%{pagespeed_version}-x64.tar.gz
 
 
 
@@ -71,7 +72,10 @@ nginx pagespeed dynamic module.
 tar --strip-components=1 -zxf %{SOURCE0}
 mkdir %{bdir}/ngx_pagespeed-latest-stable
 tar --strip-components=1 -zxf %{SOURCE2} -C %{bdir}/ngx_pagespeed-latest-stable
-tar -zxf %{SOURCE3} -C %{bdir}/ngx_pagespeed-latest-stable
+cd %{bdir}/ngx_pagespeed-latest-stable
+[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
+curl -L -O ${psol_url}
+tar -xzvf $(basename ${psol_url})  # extracts to psol/
 
 
 
@@ -136,8 +140,8 @@ BANNER
 fi
 
 %changelog
-* Fri Oct 21 2017 Shigechika AIKAWA
-- base on nginx-1.12.2 and pagespeed-1.12.34.2.
+* Fri Oct 22 2017 Shigechika AIKAWA
+- base on nginx-1.12.2 and pagespeed-1.12.34.3.
 
 * Fri Oct 13 2017 Shigechika AIKAWA
 - base on nginx-1.12.1 and pagespeed-1.12.34.2.
