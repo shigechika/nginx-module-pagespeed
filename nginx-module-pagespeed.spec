@@ -28,21 +28,20 @@ Epoch: %{epoch}
 
 %define main_version 1.12.2
 %define main_release 1%{?dist}.ngx
-%define pagespeed_version 1.12.34.3
+%define pagespeed_version 1.13.35.2
 
 %define bdir %{_builddir}/%{name}-%{main_version}
 
 Summary: nginx pagespeed dynamic module
 Name: nginx-module-pagespeed
 Version: 1.12.2
-Release: 1%{?dist}.ngx
+Release: 2%{?dist}.ngx
 Vendor: Nginx, Inc.
 URL: http://nginx.org/
 Group: %{_group}
 
 Source0: http://nginx.org/download/nginx-%{main_version}.tar.gz
 Source1: COPYRIGHT
-Source2: https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
 
 
 
@@ -54,7 +53,7 @@ BuildRequires: pcre-devel
 Requires: nginx == %{?epoch:%{epoch}:}%{main_version}-1%{?dist}.ngx
 
 %description
-nginx pagespeed dynamic module.
+ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{main_version}-%{main_release}
 
 %if 0%{?suse_version} || 0%{?amzn}
 %debug_package
@@ -71,11 +70,11 @@ nginx pagespeed dynamic module.
 %setup -qcTn %{name}-%{main_version}
 tar --strip-components=1 -zxf %{SOURCE0}
 mkdir %{bdir}/ngx_pagespeed-latest-stable
-tar --strip-components=1 -zxf %{SOURCE2} -C %{bdir}/ngx_pagespeed-latest-stable
+pagespeed_url=https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
+curl -L ${pagespeed_url} | tar --strip-components=1 -xvz -C %{bdir}/ngx_pagespeed-latest-stable  # extracts to ngx_pagespeed
 cd %{bdir}/ngx_pagespeed-latest-stable
 [ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
-curl -L -O ${psol_url}
-tar -xzvf $(basename ${psol_url})  # extracts to psol/
+curl -L ${psol_url} | tar -xvz # extracts to psol/
 
 
 
@@ -140,9 +139,13 @@ BANNER
 fi
 
 %changelog
-* Fri Oct 22 2017 Shigechika AIKAWA
-- base on nginx-1.12.2 and pagespeed-1.12.34.3.
+* Sat Feb 10 2018 Shigechika AIKAWA
+- sync w/ nginx-1.12.2 and pagespeed-1.13.35.2-stable.
+- automatic download ngx_pagespeed source and psol (binary) library.
+
+* Sun Oct 22 2017 Shigechika AIKAWA
+- base on nginx-1.12.2 and pagespeed-1.12.34.3-stable.
 
 * Fri Oct 13 2017 Shigechika AIKAWA
-- base on nginx-1.12.1 and pagespeed-1.12.34.2.
+- base on nginx-1.12.1 and pagespeed-1.12.34.2-stable.
 - referenced nginx module spec files.
