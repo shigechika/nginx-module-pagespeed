@@ -16,6 +16,8 @@ BuildRequires: libopenssl-devel
 
 %if 0%{?rhel} == 7
 BuildRequires: redhat-lsb-core
+BuildRequires: curl
+BuildRequires: libuuid-devel
 %define epoch 1
 Epoch: %{epoch}
 %define os_minor %(lsb_release -rs | cut -d '.' -f 2)
@@ -43,8 +45,6 @@ Group: %{_group}
 Source0: http://nginx.org/download/nginx-%{main_version}.tar.gz
 Source1: COPYRIGHT
 
-
-
 License: 2-clause BSD-like license
 
 BuildRoot: %{_tmppath}/%{name}-%{main_version}-%{main_release}-root
@@ -59,7 +59,6 @@ ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{main_version}-%{ma
 %debug_package
 %endif
 
-
 %define WITH_CC_OPT $(echo %{optflags} $(pcre-config --cflags))
 %define WITH_LD_OPT -Wl,-z,relro -Wl,-z,now
 
@@ -68,15 +67,13 @@ ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{main_version}-%{ma
 
 %prep
 %setup -qcTn %{name}-%{main_version}
-tar --strip-components=1 -zxf %{SOURCE0}
+tar --strip-components=1 -xzf %{SOURCE0}
 mkdir %{bdir}/ngx_pagespeed-latest-stable
 pagespeed_url=https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
-curl -L ${pagespeed_url} | tar --strip-components=1 -xvz -C %{bdir}/ngx_pagespeed-latest-stable  # extracts to ngx_pagespeed
+curl -L ${pagespeed_url} | tar --strip-components=1 -xz -C %{bdir}/ngx_pagespeed-latest-stable  # extracts to ngx_pagespeed
 cd %{bdir}/ngx_pagespeed-latest-stable
 [ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
-curl -L ${psol_url} | tar -xvz # extracts to psol/
-
-
+curl -L ${psol_url} | tar -xz # extracts to psol/
 
 %build
 
@@ -102,8 +99,6 @@ cd %{bdir}
 %{__install} -m 644 -p %{SOURCE1} \
     $RPM_BUILD_ROOT%{_datadir}/doc/nginx-module-pagespeed/
 
-
-
 %{__mkdir} -p $RPM_BUILD_ROOT%{_libdir}/nginx/modules
 for so in `find %{bdir}/objs/ -maxdepth 1 -type f -name "*.so"`; do
 %{__install} -m755 $so \
@@ -118,7 +113,6 @@ done
 %{_libdir}/nginx/modules/*
 %dir %{_datadir}/doc/nginx-module-pagespeed
 %{_datadir}/doc/nginx-module-pagespeed/*
-
 
 %post
 if [ $1 -eq 1 ]; then
