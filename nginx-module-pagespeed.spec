@@ -28,7 +28,7 @@ Epoch: %{epoch}
 %endif
 %endif
 
-%define main_version 1.12.2
+%define main_version 1.14.0
 %define main_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
@@ -36,8 +36,8 @@ Epoch: %{epoch}
 
 Summary: nginx pagespeed dynamic module
 Name: nginx-module-pagespeed
-Version: 1.12.2
-Release: 2%{?dist}.ngx
+Version: %{main_version}
+Release: 1%{?dist}.ngx
 Vendor: Nginx, Inc.
 URL: http://nginx.org/
 Group: %{_group}
@@ -133,6 +133,9 @@ BANNER
 fi
 
 %changelog
+* Mon May 07 2018 Shigechika AIKAWA
+- sync w/ nginx-1.14.0 and pagespeed-1.13.35.2-stable.
+
 * Sat Feb 10 2018 Shigechika AIKAWA
 - sync w/ nginx-1.12.2 and pagespeed-1.13.35.2-stable.
 - automatic download ngx_pagespeed source and psol (binary) library.
