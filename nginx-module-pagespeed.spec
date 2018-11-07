@@ -23,16 +23,26 @@ Epoch: %{epoch}
 %define os_minor %(lsb_release -rs | cut -d '.' -f 2)
 %if %{os_minor} >= 4
 %define dist .el7_4
+Requires: openssl >= 1.0.2
+BuildRequires: openssl-devel >= 1.0.2
 %else
+Requires: openssl >= 1.0.1
+BuildRequires: openssl-devel >= 1.0.1
 %define dist .el7
 %endif
 %endif
 
-%define main_version 1.14.0
+%define main_version 1.14.1
 %define main_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
 %define bdir %{_builddir}/%{name}-%{main_version}
+
+%define WITH_CC_OPT $(echo %{optflags} $(pcre-config --cflags))
+%define WITH_LD_OPT -Wl,-z,relro -Wl,-z,now
+
+%define BASE_CONFIGURE_ARGS $(echo "--prefix=%{_sysconfdir}/nginx --sbin-path=%{_sbindir}/nginx --modules-path=%{_libdir}/nginx/modules --conf-path=%{_sysconfdir}/nginx/nginx.conf --error-log-path=%{_localstatedir}/log/nginx/error.log --http-log-path=%{_localstatedir}/log/nginx/access.log --pid-path=%{_localstatedir}/run/nginx.pid --lock-path=%{_localstatedir}/run/nginx.lock --http-client-body-temp-path=%{_localstatedir}/cache/nginx/client_temp --http-proxy-temp-path=%{_localstatedir}/cache/nginx/proxy_temp --http-fastcgi-temp-path=%{_localstatedir}/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=%{_localstatedir}/cache/nginx/uwsgi_temp --http-scgi-temp-path=%{_localstatedir}/cache/nginx/scgi_temp --user=%{nginx_user} --group=%{nginx_group} --with-compat --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module")
+%define MODULE_CONFIGURE_ARGS $(echo "--add-dynamic-module=%{bdir}/ngx_pagespeed-latest-stable")
 
 Summary: nginx pagespeed dynamic module
 Name: nginx-module-pagespeed
@@ -58,12 +68,6 @@ ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{main_version}-%{ma
 %if 0%{?suse_version} || 0%{?amzn}
 %debug_package
 %endif
-
-%define WITH_CC_OPT $(echo %{optflags} $(pcre-config --cflags))
-%define WITH_LD_OPT -Wl,-z,relro -Wl,-z,now
-
-%define BASE_CONFIGURE_ARGS $(echo "--prefix=%{_sysconfdir}/nginx --sbin-path=%{_sbindir}/nginx --modules-path=%{_libdir}/nginx/modules --conf-path=%{_sysconfdir}/nginx/nginx.conf --error-log-path=%{_localstatedir}/log/nginx/error.log --http-log-path=%{_localstatedir}/log/nginx/access.log --pid-path=%{_localstatedir}/run/nginx.pid --lock-path=%{_localstatedir}/run/nginx.lock --http-client-body-temp-path=%{_localstatedir}/cache/nginx/client_temp --http-proxy-temp-path=%{_localstatedir}/cache/nginx/proxy_temp --http-fastcgi-temp-path=%{_localstatedir}/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=%{_localstatedir}/cache/nginx/uwsgi_temp --http-scgi-temp-path=%{_localstatedir}/cache/nginx/scgi_temp --user=%{nginx_user} --group=%{nginx_group} --with-compat --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module")
-%define MODULE_CONFIGURE_ARGS $(echo "--add-dynamic-module=%{bdir}/ngx_pagespeed-latest-stable")
 
 %prep
 %setup -qcTn %{name}-%{main_version}
@@ -133,6 +137,9 @@ BANNER
 fi
 
 %changelog
+* Wed Nov 07 2018 Shigechika AIKAWA
+- sync w/ nginx-1.14.1 and pagespeed-1.13.35.2-stable.
+
 * Mon May 07 2018 Shigechika AIKAWA
 - sync w/ nginx-1.14.0 and pagespeed-1.13.35.2-stable.
 
