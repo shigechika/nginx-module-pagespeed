@@ -32,7 +32,7 @@ BuildRequires: openssl-devel >= 1.0.1
 %endif
 %endif
 
-%define main_version 1.14.1
+%define main_version 1.14.2
 %define main_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
@@ -137,6 +137,9 @@ BANNER
 fi
 
 %changelog
+* Wed Dec 05 2018 Shigechika AIKAWA
+- sync w/ nginx-1.14.2 and pagespeed-1.13.35.2-stable.
+
 * Wed Nov 07 2018 Shigechika AIKAWA
 - sync w/ nginx-1.14.1 and pagespeed-1.13.35.2-stable.
 
