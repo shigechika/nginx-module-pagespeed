@@ -2,37 +2,58 @@
 %define nginx_user nginx
 %define nginx_group nginx
 
-BuildRequires: curl
+# distribution specific definitions
+%define use_systemd (0%{?rhel} >= 7 || 0%{?fedora} >= 19 || 0%{?suse_version} >= 1315 || 0%{?amzn} >= 2)
 
-%if 0%{?rhel} || 0%{?amzn}
-%define _group System Environment/Daemons
-BuildRequires: openssl-devel
+%if %{use_systemd}
+BuildRequires: systemd
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
 %endif
 
-%if 0%{?suse_version} == 1315
-%define _group Productivity/Networking/Web/Servers
-BuildRequires: libopenssl-devel
+%if 0%{?rhel}
+%define _group System Environment/Daemons
+%endif
+
+%if 0%{?rhel} == 6
+Requires(pre): shadow-utils
+Requires: initscripts >= 8.36
+Requires(post): chkconfig
+Requires: openssl >= 1.0.1
+BuildRequires: openssl-devel >= 1.0.1
 %endif
 
 %if 0%{?rhel} == 7
-BuildRequires: redhat-lsb-core
-BuildRequires: curl
-BuildRequires: libuuid-devel
 %define epoch 1
 Epoch: %{epoch}
-%define os_minor %(lsb_release -rs | cut -d '.' -f 2)
-%if %{os_minor} >= 4
-%define dist .el7_4
+Requires(pre): shadow-utils
 Requires: openssl >= 1.0.2
 BuildRequires: openssl-devel >= 1.0.2
-%else
-Requires: openssl >= 1.0.1
-BuildRequires: openssl-devel >= 1.0.1
 %define dist .el7
 %endif
+
+%if 0%{?rhel} == 8
+%define epoch 1
+Epoch: %{epoch}
+Requires(pre): shadow-utils
+BuildRequires: openssl-devel >= 1.1.1
+%define _debugsource_template %{nil}
 %endif
 
-%define main_version 1.14.2
+%if 0%{?suse_version} >= 1315
+%define _group Productivity/Networking/Web/Servers
+%define nginx_loggroup trusted
+Requires(pre): shadow
+BuildRequires: libopenssl-devel
+%define _debugsource_template %{nil}
+%endif
+
+# end of distribution specific definitions
+
+BuildRequires: curl
+
+%define main_version 1.16.1
 %define main_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
@@ -42,7 +63,8 @@ BuildRequires: openssl-devel >= 1.0.1
 %define WITH_LD_OPT -Wl,-z,relro -Wl,-z,now
 
 %define BASE_CONFIGURE_ARGS $(echo "--prefix=%{_sysconfdir}/nginx --sbin-path=%{_sbindir}/nginx --modules-path=%{_libdir}/nginx/modules --conf-path=%{_sysconfdir}/nginx/nginx.conf --error-log-path=%{_localstatedir}/log/nginx/error.log --http-log-path=%{_localstatedir}/log/nginx/access.log --pid-path=%{_localstatedir}/run/nginx.pid --lock-path=%{_localstatedir}/run/nginx.lock --http-client-body-temp-path=%{_localstatedir}/cache/nginx/client_temp --http-proxy-temp-path=%{_localstatedir}/cache/nginx/proxy_temp --http-fastcgi-temp-path=%{_localstatedir}/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=%{_localstatedir}/cache/nginx/uwsgi_temp --http-scgi-temp-path=%{_localstatedir}/cache/nginx/scgi_temp --user=%{nginx_user} --group=%{nginx_group} --with-compat --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module")
-%define MODULE_CONFIGURE_ARGS $(echo "--add-dynamic-module=%{bdir}/ngx_pagespeed-latest-stable")
+%define MODULE_NAME ngx_pagespeed-latest-stable
+%define MODULE_CONFIGURE_ARGS $(echo "--add-dynamic-module=%{bdir}/%{MODULE_NAME}")
 
 Summary: nginx pagespeed dynamic module
 Name: nginx-module-pagespeed
@@ -72,10 +94,10 @@ ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{main_version}-%{ma
 %prep
 %setup -qcTn %{name}-%{main_version}
 tar --strip-components=1 -xzf %{SOURCE0}
-mkdir %{bdir}/ngx_pagespeed-latest-stable
+mkdir %{bdir}/%{MODULE_NAME}
 pagespeed_url=https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
-curl -L ${pagespeed_url} | tar --strip-components=1 -xz -C %{bdir}/ngx_pagespeed-latest-stable  # extracts to ngx_pagespeed
-cd %{bdir}/ngx_pagespeed-latest-stable
+curl -L ${pagespeed_url} | tar --strip-components=1 -xz -C %{bdir}/%{MODULE_NAME}  # extracts to ngx_pagespeed
+cd %{bdir}/%{MODULE_NAME}
 [ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
 curl -L ${psol_url} | tar -xz # extracts to psol/
 
@@ -127,7 +149,7 @@ The pagespeed dynamic module for nginx has been installed.
 To enable this module, add the following to /etc/nginx/nginx.conf
 and reload nginx:
 
-    load_module modules/ngx_pagespeed.so
+    load_module modules/ngx_pagespeed.so;
 
 Please refer to the module documentation for further details:
 https://www.modpagespeed.com/doc/build_ngx_pagespeed_from_source
@@ -137,6 +159,12 @@ BANNER
 fi
 
 %changelog
+* Thu Aug 22 2019 Shigechika AIKAWA
+- sync w/ nginx-1.16.1 and pagespeed-1.13.35.2-stable.
+
+* Tue May 07 2019 Shigechika AIKAWA
+- sync w/ nginx-1.16.0 and pagespeed-1.13.35.2-stable.
+
 * Wed Dec 05 2018 Shigechika AIKAWA
 - sync w/ nginx-1.14.2 and pagespeed-1.13.35.2-stable.
 
