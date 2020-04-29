@@ -30,7 +30,9 @@ Epoch: %{epoch}
 Requires(pre): shadow-utils
 Requires: openssl >= 1.0.2
 BuildRequires: openssl-devel >= 1.0.2
+BuildRequires: libuuid-devel
 %define dist .el7
+%define debug_package %{nil}
 %endif
 
 %if 0%{?rhel} == 8
@@ -51,9 +53,9 @@ BuildRequires: libopenssl-devel
 
 # end of distribution specific definitions
 
-BuildRequires: curl
+BuildRequires: curl gcc gcc-c++
 
-%define main_version 1.16.1
+%define main_version 1.18.0
 %define main_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
@@ -87,7 +89,7 @@ Requires: nginx == %{?epoch:%{epoch}:}%{main_version}-1%{?dist}.ngx
 %description
 ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{main_version}-%{main_release}
 
-%if 0%{?suse_version} || 0%{?amzn}
+%if 0%{?suse_version} || 0%{?amzn} 
 %debug_package
 %endif
 
@@ -104,15 +106,7 @@ curl -L ${psol_url} | tar -xz # extracts to psol/
 %build
 
 cd %{bdir}
-yes Y | ./configure %{BASE_CONFIGURE_ARGS} %{MODULE_CONFIGURE_ARGS} \
-	--with-cc-opt="%{WITH_CC_OPT}" \
-	--with-ld-opt="%{WITH_LD_OPT}" \
-	--with-debug
-make %{?_smp_mflags} modules
-for so in `find %{bdir}/objs/ -type f -name "*.so"`; do
-debugso=`echo $so | sed -e "s|.so|-debug.so|"`
-mv $so $debugso
-done
+
 ./configure %{BASE_CONFIGURE_ARGS} %{MODULE_CONFIGURE_ARGS} \
 	--with-cc-opt="%{WITH_CC_OPT}" \
 	--with-ld-opt="%{WITH_LD_OPT}"
@@ -159,6 +153,9 @@ BANNER
 fi
 
 %changelog
+* Tue Apr 28 2020 Shigechika AIKAWA
+- sync w/ nginx-1.18.0 and pagespeed-1.13.35.2-stable.
+
 * Thu Aug 22 2019 Shigechika AIKAWA
 - sync w/ nginx-1.16.1 and pagespeed-1.13.35.2-stable.
 
