@@ -55,11 +55,11 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: curl gcc gcc-c++
 
-%define main_version 1.18.0
-%define main_release 1%{?dist}.ngx
+%define base_version 1.18.0
+%define base_release 2%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
-%define bdir %{_builddir}/%{name}-%{main_version}
+%define bdir %{_builddir}/%{name}-%{base_version}
 
 %define WITH_CC_OPT $(echo %{optflags} $(pcre-config --cflags))
 %define WITH_LD_OPT -Wl,-z,relro -Wl,-z,now
@@ -70,31 +70,31 @@ BuildRequires: curl gcc gcc-c++
 
 Summary: nginx pagespeed dynamic module
 Name: nginx-module-pagespeed
-Version: %{main_version}
+Version: %{base_version}
 Release: 1%{?dist}.ngx
 Vendor: Nginx, Inc.
 URL: http://nginx.org/
 Group: %{_group}
 
-Source0: http://nginx.org/download/nginx-%{main_version}.tar.gz
+Source0: http://nginx.org/download/nginx-%{base_version}.tar.gz
 Source1: COPYRIGHT
 
 License: 2-clause BSD-like license
 
-BuildRoot: %{_tmppath}/%{name}-%{main_version}-%{main_release}-root
+BuildRoot: %{_tmppath}/%{name}-%{base_version}-%{base_release}-root
 BuildRequires: zlib-devel
 BuildRequires: pcre-devel
-Requires: nginx == %{?epoch:%{epoch}:}%{main_version}-1%{?dist}.ngx
+Requires: nginx == %{?epoch:%{epoch}:}%{base_version}-%{base_release}
 
 %description
-ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{main_version}-%{main_release}
+ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{base_version}-%{base_release}
 
 %if 0%{?suse_version} || 0%{?amzn} 
 %debug_package
 %endif
 
 %prep
-%setup -qcTn %{name}-%{main_version}
+%setup -qcTn %{name}-%{base_version}
 tar --strip-components=1 -xzf %{SOURCE0}
 mkdir %{bdir}/%{MODULE_NAME}
 pagespeed_url=https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
@@ -153,6 +153,9 @@ BANNER
 fi
 
 %changelog
+* Fri Nov 20 2020 Shigechika AIKAWA
+- sync w/ nginx-1.18.0-2 rpm and pagespeed-1.13.35.2-stable.
+
 * Tue Apr 28 2020 Shigechika AIKAWA
 - sync w/ nginx-1.18.0 and pagespeed-1.13.35.2-stable.
 
