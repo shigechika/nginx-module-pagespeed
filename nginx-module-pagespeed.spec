@@ -55,8 +55,8 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: curl gcc gcc-c++
 
-%define base_version 1.18.0
-%define base_release 2%{?dist}.ngx
+%define base_version 1.20.0
+%define base_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
 %define bdir %{_builddir}/%{name}-%{base_version}
@@ -77,7 +77,7 @@ URL: http://nginx.org/
 Group: %{_group}
 
 Source0: http://nginx.org/download/nginx-%{base_version}.tar.gz
-Source1: COPYRIGHT
+Source1: nginx.copyright
 
 License: 2-clause BSD-like license
 
@@ -108,16 +108,16 @@ curl -L ${psol_url} | tar -xz # extracts to psol/
 cd %{bdir}
 
 ./configure %{BASE_CONFIGURE_ARGS} %{MODULE_CONFIGURE_ARGS} \
-	--with-cc-opt="%{WITH_CC_OPT}" \
-	--with-ld-opt="%{WITH_LD_OPT}"
+    --with-cc-opt="%{WITH_CC_OPT}" \
+    --with-ld-opt="%{WITH_LD_OPT}"
 make %{?_smp_mflags} modules
 
 %install
 cd %{bdir}
 %{__rm} -rf $RPM_BUILD_ROOT
-%{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/doc/nginx-module-pagespeed
+%{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{base_version}
 %{__install} -m 644 -p %{SOURCE1} \
-    $RPM_BUILD_ROOT%{_datadir}/doc/nginx-module-pagespeed/
+    $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{base_version}/COPYRIGHT
 
 %{__mkdir} -p $RPM_BUILD_ROOT%{_libdir}/nginx/modules
 for so in `find %{bdir}/objs/ -maxdepth 1 -type f -name "*.so"`; do
@@ -131,8 +131,8 @@ done
 %files
 %defattr(-,root,root)
 %{_libdir}/nginx/modules/*
-%dir %{_datadir}/doc/nginx-module-pagespeed
-%{_datadir}/doc/nginx-module-pagespeed/*
+%dir %{_datadir}/doc/%{name}-%{base_version}
+%{_datadir}/doc/%{name}-%{base_version}/*
 
 %post
 if [ $1 -eq 1 ]; then
@@ -153,8 +153,11 @@ BANNER
 fi
 
 %changelog
+* Thu May 13 2021 Shigechika AIKAWA
+- sync w/ nginx-1.20.0 and pagespeed-1.13.35.2-stable.
+
 * Fri Nov 20 2020 Shigechika AIKAWA
-- sync w/ nginx-1.18.0-2 rpm and pagespeed-1.13.35.2-stable.
+- sync w/ nginx-1.18.0-2 and pagespeed-1.13.35.2-stable.
 
 * Tue Apr 28 2020 Shigechika AIKAWA
 - sync w/ nginx-1.18.0 and pagespeed-1.13.35.2-stable.
