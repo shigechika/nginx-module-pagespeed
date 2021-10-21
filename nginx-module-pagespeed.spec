@@ -53,10 +53,10 @@ BuildRequires: libopenssl-devel
 
 # end of distribution specific definitions
 
-BuildRequires: curl gcc gcc-c++
+BuildRequires: make curl gcc gcc-c++
 
 %define base_version 1.20.1
-%define base_release 1%{?dist}.ngx
+%define base_release 2%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
 %define bdir %{_builddir}/%{name}-%{base_version}
@@ -71,13 +71,21 @@ BuildRequires: curl gcc gcc-c++
 Summary: nginx pagespeed dynamic module
 Name: nginx-module-pagespeed
 Version: %{base_version}
-Release: 1%{?dist}.ngx
+Release: %{base_release}
 Vendor: Nginx, Inc.
 URL: http://nginx.org/
 Group: %{_group}
 
 Source0: http://nginx.org/download/nginx-%{base_version}.tar.gz
 Source1: nginx.copyright
+
+# removes -Werror in upstream build scripts.  -Werror conflicts with
+# -D_FORTIFY_SOURCE=2 causing warnings to turn into errors.
+Patch0:            0001-remove-Werror-in-upstream-build-scripts.patch
+
+# downstream patch - fix PIDFile race condition (rhbz#1869026)
+# rejected upstream: https://trac.nginx.org/nginx/ticket/1897
+Patch1:            0002-fix-PIDFile-handling.patch
 
 License: 2-clause BSD-like license
 
@@ -96,6 +104,8 @@ ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{base_version}-%{ba
 %prep
 %setup -qcTn %{name}-%{base_version}
 tar --strip-components=1 -xzf %{SOURCE0}
+%patch0 -p1
+%patch1 -p1
 mkdir %{bdir}/%{MODULE_NAME}
 pagespeed_url=https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
 curl -L ${pagespeed_url} | tar --strip-components=1 -xz -C %{bdir}/%{MODULE_NAME}  # extracts to ngx_pagespeed
