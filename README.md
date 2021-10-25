@@ -8,7 +8,7 @@
 ## How to build
 
 ```
-rpmdev-setuptree
+rpmquery rpmdevtools || sudo yum install rpmdevtools && rpmdev-setuptree
 rpm -Uvh https://nginx.org/packages/centos/7/SRPMS/nginx-1.20.1-1.el7.ngx.src.rpm
 git clone https://github.com/shigechika/nginx-module-pagespeed.git
 rpmbuild -ba nginx-module-pagespeed/nginx-module-pagespeed.spec
@@ -16,18 +16,6 @@ sudo yum localupdate rpmbuild/RPMS/x86_64/nginx-module-pagespeed-1.20.1-1.el7.ng
 ```
 
 ## Workaround
-
-- If you stopped at rpmdev-setuptree...
-
-example
-```
-% rpmdev-setuptree
-rpmdev-setuptree: command not found
-```
-please try
-```
-sudo yum install rpmdevtools
-```
 
 - If you stopped at rpmbuild...
 
