@@ -26,10 +26,22 @@
 %global with_mailcap_mimetypes 1
 %endif
 
+# Cf. https://www.nginx.com/blog/creating-installable-packages-dynamic-modules/
+%global nginx_abiversion %{version}
+
+%global nginx_moduledir %{_libdir}/nginx/modules
+%global nginx_moduleconfdir %{_datadir}/nginx/modules
+%global nginx_srcdir %{_usrsrc}/%{name}-%{version}-%{release}
+
+# Do not generate provides/requires from nginx sources
+%global __provides_exclude_from ^%{nginx_srcdir}/.*$
+%global __requires_exclude_from ^%{nginx_srcdir}/.*$
+
+
 Name:              nginx
 Epoch:             1
 Version:           1.20.1
-Release:           2%{?dist}
+Release:           9%{?dist}
 
 Summary:           A high performance web server and reverse proxy server
 # BSD License (two clause)
@@ -48,6 +60,8 @@ Source11:          nginx.logrotate
 Source12:          nginx.conf
 Source13:          nginx-upgrade
 Source14:          nginx-upgrade.8
+Source15:          macros.nginxmods.in
+Source16:          nginxmods.attr
 Source102:         nginx-logo.png
 Source103:         404.html
 Source104:         50x.html
@@ -106,6 +120,8 @@ BuildRequires:     systemd
 Requires(post):    systemd
 Requires(preun):   systemd
 Requires(postun):  systemd
+# For external nginx modules
+Provides:          nginx(abi) = %{nginx_abiversion}
 
 %description
 Nginx is a web server and a reverse proxy server for HTTP, SMTP, POP3 and
@@ -142,7 +158,7 @@ directories.
 %package mod-http-geoip
 Summary:           Nginx HTTP geoip module
 BuildRequires:     GeoIP-devel
-Requires:          nginx
+Requires:          nginx(abi) = %{nginx_abiversion}
 Requires:          GeoIP
 
 %description mod-http-geoip
@@ -152,7 +168,7 @@ Requires:          GeoIP
 %package mod-http-image-filter
 Summary:           Nginx HTTP image filter module
 BuildRequires:     gd-devel
-Requires:          nginx
+Requires:          nginx(abi) = %{nginx_abiversion}
 Requires:          gd
 
 %description mod-http-image-filter
@@ -165,7 +181,7 @@ BuildRequires:     perl-devel
 BuildRequires:     perl-generators
 %endif
 BuildRequires:     perl(ExtUtils::Embed)
-Requires:          nginx
+Requires:          nginx(abi) = %{nginx_abiversion}
 Requires:          perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 Requires:          perl(constant)
 
@@ -175,23 +191,49 @@ Requires:          perl(constant)
 %package mod-http-xslt-filter
 Summary:           Nginx XSLT module
 BuildRequires:     libxslt-devel
-Requires:          nginx
+Requires:          nginx(abi) = %{nginx_abiversion}
 
 %description mod-http-xslt-filter
 %{summary}.
 
 %package mod-mail
 Summary:           Nginx mail modules
-Requires:          nginx
+Requires:          nginx(abi) = %{nginx_abiversion}
 
 %description mod-mail
 %{summary}.
 
 %package mod-stream
 Summary:           Nginx stream modules
-Requires:          nginx
+Requires:          nginx(abi) = %{nginx_abiversion}
 
 %description mod-stream
+%{summary}.
+
+%package mod-devel
+Summary:           Nginx module development files
+Requires:          nginx = %{epoch}:%{version}-%{release}
+Requires:          make
+Requires:          gcc
+Requires:          gd-devel
+%if 0%{?with_gperftools}
+Requires:          gperftools-devel
+%endif
+%if %{with geoip}
+Requires:          GeoIP-devel
+%endif
+Requires:          libxslt-devel
+%if 0%{?fedora} || 0%{?rhel} >= 8
+Requires:          openssl-devel
+%else
+Requires:          openssl11-devel
+%endif
+Requires:          pcre-devel
+Requires:          perl-devel
+Requires:          perl(ExtUtils::Embed)
+Requires:          zlib-devel
+
+%description mod-devel
 %{summary}.
 
 
@@ -214,6 +256,10 @@ sed \
   -i auto/lib/openssl/conf
 %endif
 
+# Prepare sources for installation
+cp -a ../%{name}-%{version} ../%{name}-%{version}-%{release}-src
+mv ../%{name}-%{version}-%{release}-src .
+
 
 %build
 # nginx does not utilize a standard configure script.  It has its own
@@ -226,7 +272,7 @@ nginx_ldopts="$RPM_LD_FLAGS -Wl,-E"
 if ! ./configure \
     --prefix=%{_datadir}/nginx \
     --sbin-path=%{_sbindir}/nginx \
-    --modules-path=%{_libdir}/nginx/modules \
+    --modules-path=%{nginx_moduledir} \
     --conf-path=%{_sysconfdir}/nginx/nginx.conf \
     --error-log-path=%{_localstatedir}/log/nginx/error.log \
     --http-log-path=%{_localstatedir}/log/nginx/access.log \
@@ -311,8 +357,8 @@ install -p -d -m 0700 %{buildroot}%{_localstatedir}/lib/nginx/tmp
 install -p -d -m 0700 %{buildroot}%{_localstatedir}/log/nginx
 
 install -p -d -m 0755 %{buildroot}%{_datadir}/nginx/html
-install -p -d -m 0755 %{buildroot}%{_datadir}/nginx/modules
-install -p -d -m 0755 %{buildroot}%{_libdir}/nginx/modules
+install -p -d -m 0755 %{buildroot}%{nginx_moduleconfdir}
+install -p -d -m 0755 %{buildroot}%{nginx_moduledir}
 
 install -p -m 0644 ./nginx.conf \
     %{buildroot}%{_sysconfdir}/nginx
@@ -338,6 +384,11 @@ mkdir -p %{buildroot}%{_datadir}/nginx/html/icons
 ln -s ../../../pixmaps/poweredby.png \
       %{buildroot}%{_datadir}/nginx/html/icons/poweredby.png
 
+%if 0%{?rhel} >= 9
+ln -s ../../pixmaps/system-noindex-logo.png \
+      %{buildroot}%{_datadir}/nginx/html/system_noindex_logo.png
+%endif
+
 install -p -m 0644 %{SOURCE103} %{SOURCE104} \
     %{buildroot}%{_datadir}/nginx/html
 
@@ -357,19 +408,34 @@ for i in ftdetect ftplugin indent syntax; do
 done
 
 %if %{with geoip}
-echo 'load_module "%{_libdir}/nginx/modules/ngx_http_geoip_module.so";' \
-    > %{buildroot}%{_datadir}/nginx/modules/mod-http-geoip.conf
+echo 'load_module "%{nginx_moduledir}/ngx_http_geoip_module.so";' \
+    > %{buildroot}%{nginx_moduleconfdir}/mod-http-geoip.conf
 %endif
-echo 'load_module "%{_libdir}/nginx/modules/ngx_http_image_filter_module.so";' \
-    > %{buildroot}%{_datadir}/nginx/modules/mod-http-image-filter.conf
-echo 'load_module "%{_libdir}/nginx/modules/ngx_http_perl_module.so";' \
-    > %{buildroot}%{_datadir}/nginx/modules/mod-http-perl.conf
-echo 'load_module "%{_libdir}/nginx/modules/ngx_http_xslt_filter_module.so";' \
-    > %{buildroot}%{_datadir}/nginx/modules/mod-http-xslt-filter.conf
-echo 'load_module "%{_libdir}/nginx/modules/ngx_mail_module.so";' \
-    > %{buildroot}%{_datadir}/nginx/modules/mod-mail.conf
-echo 'load_module "%{_libdir}/nginx/modules/ngx_stream_module.so";' \
-    > %{buildroot}%{_datadir}/nginx/modules/mod-stream.conf
+echo 'load_module "%{nginx_moduledir}/ngx_http_image_filter_module.so";' \
+    > %{buildroot}%{nginx_moduleconfdir}/mod-http-image-filter.conf
+echo 'load_module "%{nginx_moduledir}/ngx_http_perl_module.so";' \
+    > %{buildroot}%{nginx_moduleconfdir}/mod-http-perl.conf
+echo 'load_module "%{nginx_moduledir}/ngx_http_xslt_filter_module.so";' \
+    > %{buildroot}%{nginx_moduleconfdir}/mod-http-xslt-filter.conf
+echo 'load_module "%{nginx_moduledir}/ngx_mail_module.so";' \
+    > %{buildroot}%{nginx_moduleconfdir}/mod-mail.conf
+echo 'load_module "%{nginx_moduledir}/ngx_stream_module.so";' \
+    > %{buildroot}%{nginx_moduleconfdir}/mod-stream.conf
+
+# Install files for supporting nginx module builds
+## Install source files
+mkdir -p %{buildroot}%{_usrsrc}
+mv %{name}-%{version}-%{release}-src %{buildroot}%{nginx_srcdir}
+## Install rpm macros
+mkdir -p %{buildroot}%{_rpmmacrodir}
+sed -e "s|@@NGINX_ABIVERSION@@|%{nginx_abiversion}|g" \
+    -e "s|@@NGINX_MODDIR@@|%{nginx_moduledir}|g" \
+    -e "s|@@NGINX_MODCONFDIR@@|%{nginx_moduleconfdir}|g" \
+    -e "s|@@NGINX_SRCDIR@@|%{nginx_srcdir}|g" \
+    %{SOURCE15} > %{buildroot}%{_rpmmacrodir}/macros.nginxmods
+## Install dependency generator
+install -Dpm0644 %{SOURCE16} %{buildroot}%{_fileattrsdir}/nginxmods.attr
+
 
 %pre filesystem
 getent group %{nginx_user} > /dev/null || groupadd -r %{nginx_user}
@@ -462,7 +528,8 @@ fi
 %attr(711,root,root) %dir %{_localstatedir}/log/nginx
 %ghost %attr(640,%{nginx_user},root) %{_localstatedir}/log/nginx/access.log
 %ghost %attr(640,%{nginx_user},root) %{_localstatedir}/log/nginx/error.log
-%dir %{_libdir}/nginx/modules
+%dir %{nginx_moduledir}
+%dir %{nginx_moduleconfdir}
 
 %files all-modules
 
@@ -477,35 +544,61 @@ fi
 
 %if %{with geoip}
 %files mod-http-geoip
-%{_datadir}/nginx/modules/mod-http-geoip.conf
-%{_libdir}/nginx/modules/ngx_http_geoip_module.so
+%{nginx_moduleconfdir}/mod-http-geoip.conf
+%{nginx_moduledir}/ngx_http_geoip_module.so
 %endif
 
 %files mod-http-image-filter
-%{_datadir}/nginx/modules/mod-http-image-filter.conf
-%{_libdir}/nginx/modules/ngx_http_image_filter_module.so
+%{nginx_moduleconfdir}/mod-http-image-filter.conf
+%{nginx_moduledir}/ngx_http_image_filter_module.so
 
 %files mod-http-perl
-%{_datadir}/nginx/modules/mod-http-perl.conf
-%{_libdir}/nginx/modules/ngx_http_perl_module.so
+%{nginx_moduleconfdir}/mod-http-perl.conf
+%{nginx_moduledir}/ngx_http_perl_module.so
 %dir %{perl_vendorarch}/auto/nginx
 %{perl_vendorarch}/nginx.pm
 %{perl_vendorarch}/auto/nginx/nginx.so
 
 %files mod-http-xslt-filter
-%{_datadir}/nginx/modules/mod-http-xslt-filter.conf
-%{_libdir}/nginx/modules/ngx_http_xslt_filter_module.so
+%{nginx_moduleconfdir}/mod-http-xslt-filter.conf
+%{nginx_moduledir}/ngx_http_xslt_filter_module.so
 
 %files mod-mail
-%{_datadir}/nginx/modules/mod-mail.conf
-%{_libdir}/nginx/modules/ngx_mail_module.so
+%{nginx_moduleconfdir}/mod-mail.conf
+%{nginx_moduledir}/ngx_mail_module.so
 
 %files mod-stream
-%{_datadir}/nginx/modules/mod-stream.conf
-%{_libdir}/nginx/modules/ngx_stream_module.so
+%{nginx_moduleconfdir}/mod-stream.conf
+%{nginx_moduledir}/ngx_stream_module.so
+
+%files mod-devel
+%{_rpmmacrodir}/macros.nginxmods
+%{_fileattrsdir}/nginxmods.attr
+%{nginx_srcdir}/
 
 
 %changelog
+* Mon Oct 18 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-9
+- fix installation of nginxmods.attr for EPEL 7
+
+* Mon Oct 18 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-8
+- Fix "file size changed while zipping" when rotating logs (rhbz#1980948,2015249,2015243)
+
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 1:1.20.1-7
+- Rebuilt with OpenSSL 3.0.0
+
+* Tue Aug 10 2021 Neal Gompa <ngompa@datto.com> - 1:1.20.1-6
+- Add -mod-devel subpackage for building external nginx modules (rhbz#1989778)
+
+* Mon Aug 09 2021 Luboš Uhliarik <luhliari@redhat.com> - 1:1.20.1-5
+- Add symlink used by system-logos-httpd
+
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.20.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Fri Jun 25 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-3
+- fix for CVE-2021-3618 (rhbz#1975651)
+
 * Tue Jun 01 2021 Felix Kaechele <heffer@fedoraproject.org> - 1:1.20.1-2
 - use different fix for rhbz#1683388 as it introduced permissions issues in 1:1.20.0-2
 

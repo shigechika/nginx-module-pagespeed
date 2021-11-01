@@ -56,7 +56,7 @@ BuildRequires: libopenssl-devel
 BuildRequires: make curl gcc gcc-c++
 
 %define base_version 1.20.1
-%define base_release 2%{?dist}.ngx
+%define base_release 3%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
 %define bdir %{_builddir}/%{name}-%{base_version}
@@ -86,6 +86,9 @@ Patch0:            0001-remove-Werror-in-upstream-build-scripts.patch
 # downstream patch - fix PIDFile race condition (rhbz#1869026)
 # rejected upstream: https://trac.nginx.org/nginx/ticket/1897
 Patch1:            0002-fix-PIDFile-handling.patch
+
+# Fix for CVE-2021-3618: ALPACA: Application Layer Protocol Confusion - Analyzing and Mitigating Cracks in TLS Authentication
+Patch2:            http://hg.nginx.org/nginx/raw-rev/ec1071830799
 
 License: 2-clause BSD-like license
 
