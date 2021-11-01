@@ -55,8 +55,8 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: make curl gcc gcc-c++
 
-%define base_version 1.20.1
-%define base_release 2%{?dist}.ngx
+%define base_version 1.21.3
+%define base_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
 %define bdir %{_builddir}/%{name}-%{base_version}
