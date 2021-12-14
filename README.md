@@ -9,7 +9,7 @@
 
 ```
 rpmquery rpmdevtools || sudo yum install rpmdevtools && rpmdev-setuptree
-rpm -Uvh https://nginx.org/packages/centos/7/SRPMS/nginx-1.21.4-1.el7.ngx.src.rpm
+rpm -Uvh https://nginx.org/packages/mainline/centos/7/SRPMS/nginx-1.21.4-1.el7.ngx.src.rpm
 git clone https://github.com/shigechika/nginx-module-pagespeed.git
 rpmbuild -ba nginx-module-pagespeed/nginx-module-pagespeed.spec
 sudo yum localupdate rpmbuild/RPMS/x86_64/nginx-module-pagespeed-1.21.4-1.el7.ngx.x86_64.rpm
