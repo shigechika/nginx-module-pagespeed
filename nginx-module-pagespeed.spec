@@ -79,14 +79,6 @@ Group: %{_group}
 Source0: http://nginx.org/download/nginx-%{base_version}.tar.gz
 Source1: nginx.copyright
 
-# removes -Werror in upstream build scripts.  -Werror conflicts with
-# -D_FORTIFY_SOURCE=2 causing warnings to turn into errors.
-Patch0:            0001-remove-Werror-in-upstream-build-scripts.patch
-
-# downstream patch - fix PIDFile race condition (rhbz#1869026)
-# rejected upstream: https://trac.nginx.org/nginx/ticket/1897
-Patch1:            0002-fix-PIDFile-handling.patch
-
 License: 2-clause BSD-like license
 
 BuildRoot: %{_tmppath}/%{name}-%{base_version}-%{base_release}-root
@@ -104,8 +96,6 @@ ngx_pagespeed-%{pagespeed_version} dynamic module for nginx-%{base_version}-%{ba
 %prep
 %setup -qcTn %{name}-%{base_version}
 tar --strip-components=1 -xzf %{SOURCE0}
-%patch0 -p1
-%patch1 -p1
 mkdir %{bdir}/%{MODULE_NAME}
 pagespeed_url=https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
 curl -L ${pagespeed_url} | tar --strip-components=1 -xz -C %{bdir}/%{MODULE_NAME}  # extracts to ngx_pagespeed
