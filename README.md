@@ -9,10 +9,10 @@
 
 ```
 rpmquery rpmdevtools || sudo yum install rpmdevtools && rpmdev-setuptree
-rpm -Uvh https://nginx.org/packages/centos/7/SRPMS/nginx-1.21.3-1.el7.ngx.src.rpm
+rpm -Uvh https://nginx.org/packages/centos/7/SRPMS/nginx-1.21.4-1.el7.ngx.src.rpm
 git clone https://github.com/shigechika/nginx-module-pagespeed.git
 rpmbuild -ba nginx-module-pagespeed/nginx-module-pagespeed.spec
-sudo yum localupdate rpmbuild/RPMS/x86_64/nginx-module-pagespeed-1.21.3-1.el7.ngx.x86_64.rpm
+sudo yum localupdate rpmbuild/RPMS/x86_64/nginx-module-pagespeed-1.21.4-1.el7.ngx.x86_64.rpm
 ```
 
 ## Workaround
@@ -29,12 +29,12 @@ example
 ```
 % rpmbuild -ba ...
 error: Failed build dependencies:
-	openssl-devel >= 1.0.2 is needed by nginx-module-pagespeed-1:1.21.3-1.el7.ngx.x86_64
-	libuuid-devel is needed by nginx-module-pagespeed-1:1.21.3-1.el7.ngx.x86_64
-	gcc is needed by nginx-module-pagespeed-1:1.21.3-1.el7.ngx.x86_64
-	gcc-c++ is needed by nginx-module-pagespeed-1:1.21.3-1.el7.ngx.x86_64
-	zlib-devel is needed by nginx-module-pagespeed-1:1.21.3-1.el7.ngx.x86_64
-	pcre-devel is needed by nginx-module-pagespeed-1:1.21.3-1.el7.ngx.x86_64
+	openssl-devel >= 1.0.2 is needed by nginx-module-pagespeed-1:1.21.4-1.el7.ngx.x86_64
+	libuuid-devel is needed by nginx-module-pagespeed-1:1.21.4-1.el7.ngx.x86_64
+	gcc is needed by nginx-module-pagespeed-1:1.21.4-1.el7.ngx.x86_64
+	gcc-c++ is needed by nginx-module-pagespeed-1:1.21.4-1.el7.ngx.x86_64
+	zlib-devel is needed by nginx-module-pagespeed-1:1.21.4-1.el7.ngx.x86_64
+	pcre-devel is needed by nginx-module-pagespeed-1:1.21.4-1.el7.ngx.x86_64
 ```
 please try
 ```

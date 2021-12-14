@@ -55,7 +55,7 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: make curl gcc gcc-c++
 
-%define base_version 1.21.3
+%define base_version 1.21.4
 %define base_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
@@ -163,6 +163,12 @@ BANNER
 fi
 
 %changelog
+* Tue Dec 14 2021 Shigechika AIKAWA
+- sync w/ nginx-1.21.4 and pagespeed-1.13.35.2-stable.
+
+* Mon Oct 25 2021 Shigechika AIKAWA
+- sync w/ nginx-1.21.3 and pagespeed-1.13.35.2-stable.
+
 * Thu Oct 21 2021 Shigechika AIKAWA
 - sync w/ nginx-1.20.1 and pagespeed-1.13.35.2-stable.
 
