@@ -1,6 +1,6 @@
 # nginx-module-pagespeed
 
-- This package use with nginx.org yum repository.
+- Compatible with nginx.org repository.
 - Pagespeed Dynamic Module
 - Currently supports CentOS7 only
 - Automatic download PSOL(PageSpeed Optimization Libraries) stable version
