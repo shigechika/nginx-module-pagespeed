@@ -74,12 +74,13 @@ applications that use %{name}.
 mkdir -p %{buildroot}%{_libdir}/pkgconfig
 sed s:@libdir@:%{_libdir}: <%{S:1} >%{buildroot}%{_libdir}/pkgconfig/modsecurity.pc
 
-
 %if 0%{?rhel} == 7
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post
+/sbin/ldconfig
+%postun
+/sbin/ldconfig
 %endif
-%if 0%{?rhel} != 7
+%if 0%{?rhel} >= 8
 %ldconfig_scriptlets
 %endif
 
