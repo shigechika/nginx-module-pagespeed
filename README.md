@@ -30,12 +30,12 @@ example
 ```
 % rpmbuild -ba ...
 error: Failed build dependencies:
-	openssl-devel >= 1.0.2 is needed by nginx-module-pagespeed-1:1.21.5-1.el7.ngx.x86_64
-	libuuid-devel is needed by nginx-module-pagespeed-1:1.21.5-1.el7.ngx.x86_64
-	gcc is needed by nginx-module-pagespeed-1:1.21.5-1.el7.ngx.x86_64
-	gcc-c++ is needed by nginx-module-pagespeed-1:1.21.5-1.el7.ngx.x86_64
-	zlib-devel is needed by nginx-module-pagespeed-1:1.21.5-1.el7.ngx.x86_64
-	pcre-devel is needed by nginx-module-pagespeed-1:1.21.5-1.el7.ngx.x86_64
+	openssl-devel >= 1.0.2 is needed by nginx-module-pagespeed-1:1.21.X-1.el7.ngx.x86_64
+	libuuid-devel is needed by nginx-module-pagespeed-1:1.21.X-1.el7.ngx.x86_64
+	gcc is needed by nginx-module-pagespeed-1:1.21.X-1.el7.ngx.x86_64
+	gcc-c++ is needed by nginx-module-pagespeed-1:1.21.X-1.el7.ngx.x86_64
+	zlib-devel is needed by nginx-module-pagespeed-1:1.21.X-1.el7.ngx.x86_64
+	pcre-devel is needed by nginx-module-pagespeed-1:1.21.X-1.el7.ngx.x86_64
 ```
 please try
 ```
