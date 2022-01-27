@@ -31,6 +31,7 @@ Requires(pre): shadow-utils
 Requires: openssl >= 1.0.2
 BuildRequires: openssl-devel >= 1.0.2
 BuildRequires: libuuid-devel
+BuildRequires: libmodsecurity >= 3.0.6
 %define dist .el7
 %define debug_package %{nil}
 %endif
@@ -55,9 +56,8 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: make curl gcc gcc-c++
 
-%define base_version 1.21.4
+%define base_version 1.21.6
 %define base_release 1%{?dist}.ngx
-#%define pagespeed_version 1.13.35.2
 
 %define bdir %{_builddir}/%{name}-%{base_version}
 
@@ -96,13 +96,6 @@ ngx_ModSecurity dynamic module for nginx-%{base_version}-%{base_release}
 %prep
 %setup -qcTn %{name}-%{base_version}
 tar --strip-components=1 -xzf %{SOURCE0}
-#mkdir %{bdir}/%{MODULE_NAME}
-#pagespeed_url=https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_version}-stable.tar.gz
-#curl -L ${pagespeed_url} | tar --strip-components=1 -xz -C %{bdir}/%{MODULE_NAME}  # extracts to ngx_pagespeed
-#cd %{bdir}/%{MODULE_NAME}
-#cd %{bdir}
-#[ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
-#curl -L ${psol_url} | tar -xz # extracts to psol/
 git clone https://github.com/SpiderLabs/ModSecurity-nginx.git
 
 %build
@@ -141,11 +134,11 @@ if [ $1 -eq 1 ]; then
 cat <<BANNER
 ----------------------------------------------------------------------
 
-The pagespeed dynamic module for nginx has been installed.
+The ModSecurity dynamic module for nginx has been installed.
 To enable this module, add the following to /etc/nginx/nginx.conf
 and reload nginx:
 
-    load_module modules/ngx_pagespeed.so;
+    load_module modules/ngx_http_modsecurity_module.so;
 
 Please refer to the module documentation for further details:
 https://www.modpagespeed.com/doc/build_ngx_pagespeed_from_source
@@ -155,46 +148,5 @@ BANNER
 fi
 
 %changelog
-* Tue Dec 14 2021 Shigechika AIKAWA
-- sync w/ nginx-1.21.4 and pagespeed-1.13.35.2-stable.
-
-* Mon Oct 25 2021 Shigechika AIKAWA
-- sync w/ nginx-1.21.3 and pagespeed-1.13.35.2-stable.
-
-* Thu Oct 21 2021 Shigechika AIKAWA
-- sync w/ nginx-1.20.1 and pagespeed-1.13.35.2-stable.
-
-* Thu May 13 2021 Shigechika AIKAWA
-- sync w/ nginx-1.20.0 and pagespeed-1.13.35.2-stable.
-
-* Fri Nov 20 2020 Shigechika AIKAWA
-- sync w/ nginx-1.18.0-2 and pagespeed-1.13.35.2-stable.
-
-* Tue Apr 28 2020 Shigechika AIKAWA
-- sync w/ nginx-1.18.0 and pagespeed-1.13.35.2-stable.
-
-* Thu Aug 22 2019 Shigechika AIKAWA
-- sync w/ nginx-1.16.1 and pagespeed-1.13.35.2-stable.
-
-* Tue May 07 2019 Shigechika AIKAWA
-- sync w/ nginx-1.16.0 and pagespeed-1.13.35.2-stable.
-
-* Wed Dec 05 2018 Shigechika AIKAWA
-- sync w/ nginx-1.14.2 and pagespeed-1.13.35.2-stable.
-
-* Wed Nov 07 2018 Shigechika AIKAWA
-- sync w/ nginx-1.14.1 and pagespeed-1.13.35.2-stable.
-
-* Mon May 07 2018 Shigechika AIKAWA
-- sync w/ nginx-1.14.0 and pagespeed-1.13.35.2-stable.
-
-* Sat Feb 10 2018 Shigechika AIKAWA
-- sync w/ nginx-1.12.2 and pagespeed-1.13.35.2-stable.
-- automatic download ngx_pagespeed source and psol (binary) library.
-
-* Sun Oct 22 2017 Shigechika AIKAWA
-- base on nginx-1.12.2 and pagespeed-1.12.34.3-stable.
-
-* Fri Oct 13 2017 Shigechika AIKAWA
-- base on nginx-1.12.1 and pagespeed-1.12.34.2-stable.
-- referenced nginx module spec files.
+* Thu Jan 27 2022 AIKAWA Shigechika
+- sync w/ nginx-1.21.6
