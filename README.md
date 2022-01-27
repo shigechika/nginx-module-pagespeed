@@ -41,6 +41,29 @@ please try
 sudo yum install openssl-devel libuuid-devel gcc-c++
 ```
 
+$ LANG=C rpmbuild -ba libmodsecurity.spec
+error: Failed build dependencies:
+	flex is needed by libmodsecurity-3.0.6-1.el7.x86_64
+	bison is needed by libmodsecurity-3.0.6-1.el7.x86_64
+	ssdeep-devel is needed by libmodsecurity-3.0.6-1.el7.x86_64
+	pkgconfig(libxml-2.0) is needed by libmodsecurity-3.0.6-1.el7.x86_64
+	pkgconfig(yajl) is needed by libmodsecurity-3.0.6-1.el7.x86_64
+	pkgconfig(libcurl) is needed by libmodsecurity-3.0.6-1.el7.x86_64
+	pkgconfig(geoip) is needed by libmodsecurity-3.0.6-1.el7.x86_64
+	pkgconfig(lmdb) is needed by libmodsecurity-3.0.6-1.el7.x86_64
+
+sudo yum install lmdb-devel geoip-devel libcurl-devel yajl-devel libxml2-devel ssdeep-devel bison flex gzip
+
+curl -L -O https://github.com/SpiderLabs/ModSecurity/releases/download/v3.0.6/modsecurity-v3.0.6.tar.gz
+curl -O https://src.fedoraproject.org/rpms/libmodsecurity/raw/rawhide/f/modsecurity.pc
+QA_RPATHS=$[ 0x0001|0x0010 ] rpmbuild -ba libmodsecurity.spec
+
+sudo yum localinstall ../rpmbuild/RPMS/x86_64/libmodsecurity-devel-3.0.6-1.el7.x86_64.rpm  ../rpmbuild/RPMS/x86_64/libmodsecurity-3.0.6-1.el7.x86_64.rpm
+
+2022/01/27 19:15:52 [notice] 12084#12084: ModSecurity-nginx v1.0.2 (rules loaded inline/local/remote: 0/0/0)
+2022/01/27 19:16:06 [notice] 12117#12117: ModSecurity-nginx v1.0.2 (rules loaded inline/local/remote: 0/0/0)
+
+
 ## NO WARRANTY
 
 Good LUCK :-)

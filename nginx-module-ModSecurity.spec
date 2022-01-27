@@ -141,7 +141,7 @@ and reload nginx:
     load_module modules/ngx_http_modsecurity_module.so;
 
 Please refer to the module documentation for further details:
-https://www.modpagespeed.com/doc/build_ngx_pagespeed_from_source
+https://github.com/SpiderLabs/ModSecurity-nginx
 
 ----------------------------------------------------------------------
 BANNER
