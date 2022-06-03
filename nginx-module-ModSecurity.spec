@@ -31,7 +31,7 @@ Requires(pre): shadow-utils
 Requires: openssl >= 1.0.2
 BuildRequires: openssl-devel >= 1.0.2
 BuildRequires: libuuid-devel
-BuildRequires: libmodsecurity >= 3.0.6
+BuildRequires: libmodsecurity-devel >= 3.0.7
 %define dist .el7
 %define debug_package %{nil}
 %endif
@@ -56,8 +56,8 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: make curl gcc gcc-c++
 
-%define base_version 1.21.6
-%define base_release 1%{?dist}.ngx
+%define base_version 1.22.0
+%define base_release 0%{?dist}.ngx
 
 %define bdir %{_builddir}/%{name}-%{base_version}
 
