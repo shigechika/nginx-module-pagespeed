@@ -55,7 +55,7 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: make curl gcc gcc-c++
 
-%define base_version 1.21.4
+%define base_version 1.22.0
 %define base_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
@@ -153,46 +153,55 @@ BANNER
 fi
 
 %changelog
-* Tue Dec 14 2021 Shigechika AIKAWA
+* Thu Jun 23 2022 AIKAWA Shigechika
+- sync w/ nginx-1.22.0 and pagespeed-1.13.35.2-stable.
+
+* Thu Jan 27 2022 AIKAWA Shigechika
+- sync w/ nginx-1.21.6 and pagespeed-1.13.35.2-stable.
+
+* Thu Jan 20 2022 AIKAWA Shigechika
+- sync w/ nginx-1.21.5 and pagespeed-1.13.35.2-stable.
+
+* Tue Dec 14 2021 AIAKWA Shigechika
 - sync w/ nginx-1.21.4 and pagespeed-1.13.35.2-stable.
 
-* Mon Oct 25 2021 Shigechika AIKAWA
+* Mon Oct 25 2021 AIAKWA Shigechika
 - sync w/ nginx-1.21.3 and pagespeed-1.13.35.2-stable.
 
-* Thu Oct 21 2021 Shigechika AIKAWA
+* Thu Oct 21 2021 AIAKWA Shigechika
 - sync w/ nginx-1.20.1 and pagespeed-1.13.35.2-stable.
 
-* Thu May 13 2021 Shigechika AIKAWA
+* Thu May 13 2021 AIAKWA Shigechika
 - sync w/ nginx-1.20.0 and pagespeed-1.13.35.2-stable.
 
-* Fri Nov 20 2020 Shigechika AIKAWA
+* Fri Nov 20 2020 AIAKWA Shigechika
 - sync w/ nginx-1.18.0-2 and pagespeed-1.13.35.2-stable.
 
-* Tue Apr 28 2020 Shigechika AIKAWA
+* Tue Apr 28 2020 AIAKWA Shigechika
 - sync w/ nginx-1.18.0 and pagespeed-1.13.35.2-stable.
 
-* Thu Aug 22 2019 Shigechika AIKAWA
+* Thu Aug 22 2019 AIAKWA Shigechika
 - sync w/ nginx-1.16.1 and pagespeed-1.13.35.2-stable.
 
-* Tue May 07 2019 Shigechika AIKAWA
+* Tue May 07 2019 AIAKWA Shigechika
 - sync w/ nginx-1.16.0 and pagespeed-1.13.35.2-stable.
 
-* Wed Dec 05 2018 Shigechika AIKAWA
+* Wed Dec 05 2018 AIAKWA Shigechika
 - sync w/ nginx-1.14.2 and pagespeed-1.13.35.2-stable.
 
-* Wed Nov 07 2018 Shigechika AIKAWA
+* Wed Nov 07 2018 AIAKWA Shigechika
 - sync w/ nginx-1.14.1 and pagespeed-1.13.35.2-stable.
 
-* Mon May 07 2018 Shigechika AIKAWA
+* Mon May 07 2018 AIAKWA Shigechika
 - sync w/ nginx-1.14.0 and pagespeed-1.13.35.2-stable.
 
-* Sat Feb 10 2018 Shigechika AIKAWA
+* Sat Feb 10 2018 AIAKWA Shigechika
 - sync w/ nginx-1.12.2 and pagespeed-1.13.35.2-stable.
 - automatic download ngx_pagespeed source and psol (binary) library.
 
-* Sun Oct 22 2017 Shigechika AIKAWA
+* Sun Oct 22 2017 AIAKWA Shigechika
 - base on nginx-1.12.2 and pagespeed-1.12.34.3-stable.
 
-* Fri Oct 13 2017 Shigechika AIKAWA
+* Fri Oct 13 2017 AIAKWA Shigechika
 - base on nginx-1.12.1 and pagespeed-1.12.34.2-stable.
 - referenced nginx module spec files.
