@@ -21,7 +21,7 @@ git clone https://github.com/shigechika/nginx-module-pagespeed.git
 cp nginx-module-pagespeed/PR1750.diff ~/rpmbuild/SOURCES/
 rpmquery openssl-devel libuuid-devel gcc-c++ || sudo yum install -y openssl-devel libuuid-devel gcc-c++
 rpmbuild -ba nginx-module-pagespeed/nginx-module-pagespeed.spec
-sudo yum localupdate rpmbuild/RPMS/x86_64/nginx-module-pagespeed-1.23.1-1.el7.ngx.x86_64.rpm
+sudo yum localinstall ~/rpmbuild/RPMS/x86_64/nginx-module-pagespeed-1.23.1-1.el7.ngx.x86_64.rpm
 ```
 
 ## Workaround
