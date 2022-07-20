@@ -55,7 +55,7 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: make curl gcc gcc-c++
 
-%define base_version 1.22.0
+%define base_version 1.23.1
 %define base_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
@@ -78,6 +78,7 @@ Group: %{_group}
 
 Source0: http://nginx.org/download/nginx-%{base_version}.tar.gz
 Source1: nginx.copyright
+Patch0: PR1750.diff
 
 License: 2-clause BSD-like license
 
@@ -102,6 +103,7 @@ curl -L ${pagespeed_url} | tar --strip-components=1 -xz -C %{bdir}/%{MODULE_NAME
 cd %{bdir}/%{MODULE_NAME}
 [ -e scripts/format_binary_url.sh ] && psol_url=$(scripts/format_binary_url.sh PSOL_BINARY_URL)
 curl -L ${psol_url} | tar -xz # extracts to psol/
+%patch0 -p1
 
 %build
 
@@ -153,6 +155,9 @@ BANNER
 fi
 
 %changelog
+* Wed Jul 20 2022 AIKAWA Shigechika
+- sync w/ nginx-1.23.1 and pagespeed-1.13.35.2-stable.
+
 * Thu Jun 23 2022 AIKAWA Shigechika
 - sync w/ nginx-1.22.0 and pagespeed-1.13.35.2-stable.
 
