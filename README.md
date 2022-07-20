@@ -5,6 +5,13 @@
 - Currently supports CentOS7 only
 - Automatic download PSOL(PageSpeed Optimization Libraries) stable version
 
+## How to install
+
+```
+sudo yum-config-manager --enable nginx-mainline
+sudo yum install https://github.com/shigechika/nginx-module-pagespeed/releases/download/1.23.1/nginx-module-pagespeed-1.23.1-1.el7.ngx.x86_64.rpm
+```
+
 ## How to build
 
 ```
