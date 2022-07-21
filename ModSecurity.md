@@ -14,6 +14,6 @@ sudo yum localinstall rpmbuild/RPMS/x86_64/libmodsecurity-devel-3.0.7-1.el7.x86_
 
 ```
 rpmbuild -ba nginx-module-pagespeed/nginx-module-ModSecurity.spec
-sudo yum localinstall rpmbuild/RPMS/x86_64/nginx-module-ModSecurity-1.22.0-1.el7.ngx.x86_64.rpm
+sudo yum localinstall rpmbuild/RPMS/x86_64/nginx-module-ModSecurity-1.23.1-1.el7.ngx.x86_64.rpm
 ```
 

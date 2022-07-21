@@ -56,7 +56,7 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: make curl gcc gcc-c++
 
-%define base_version 1.22.0
+%define base_version 1.23.1
 %define base_release 1%{?dist}.ngx
 
 %define bdir %{_builddir}/%{name}-%{base_version}
@@ -148,5 +148,8 @@ BANNER
 fi
 
 %changelog
+* Thu Jul 21 2022 AIKAWA Shigechika
+- sync w/ nginx-1.23.1
+
 * Thu Jan 27 2022 AIKAWA Shigechika
 - sync w/ nginx-1.21.6
