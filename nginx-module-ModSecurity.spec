@@ -31,7 +31,7 @@ Requires(pre): shadow-utils
 Requires: openssl >= 1.0.2
 BuildRequires: openssl-devel >= 1.0.2
 BuildRequires: libuuid-devel
-BuildRequires: libmodsecurity-devel >= 3.0.7
+BuildRequires: libmodsecurity-devel >= 3.0.8
 %define dist .el7
 %define debug_package %{nil}
 %endif
@@ -148,6 +148,9 @@ BANNER
 fi
 
 %changelog
+* Sat Sep 24 2022 AIKAWA Shigechika
+- sync w/ libmodsecurity-3.0.8
+
 * Thu Jul 21 2022 AIKAWA Shigechika
 - sync w/ nginx-1.23.1
 
