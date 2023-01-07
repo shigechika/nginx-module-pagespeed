@@ -155,7 +155,7 @@ BANNER
 fi
 
 %changelog
-* Sat Jan 07 2022 AIKAWA Shigechika
+* Sat Jan 07 2023 AIKAWA Shigechika
 - sync w/ nginx-1.23.3 and pagespeed-1.13.35.2-stable.
 
 * Sat Oct 22 2022 AIKAWA Shigechika
