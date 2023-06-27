@@ -1,3 +1,4 @@
+%define base_version 1.25.1
 #
 %define nginx_user nginx
 %define nginx_group nginx
@@ -55,7 +56,6 @@ BuildRequires: libopenssl-devel
 
 BuildRequires: make curl gcc gcc-c++
 
-%define base_version 1.23.3
 %define base_release 1%{?dist}.ngx
 %define pagespeed_version 1.13.35.2
 
@@ -155,6 +155,9 @@ BANNER
 fi
 
 %changelog
+* Tue Jun 27 2023 AIKAWA Shigechika
+- sync w/ nginx-1.25.1 and pagespeed-1.13.35.2-stable.
+
 * Sat Jan 07 2023 AIKAWA Shigechika
 - sync w/ nginx-1.23.3 and pagespeed-1.13.35.2-stable.
 
