@@ -1,4 +1,4 @@
-%define base_version 1.25.3
+%define base_version 1.25.4
 #
 %define nginx_user nginx
 %define nginx_group nginx
@@ -155,6 +155,15 @@ BANNER
 fi
 
 %changelog
+* Tue Feb 20 2024 AIKAWA Shigechika
+- sync w/ nginx-1.25.4 and pagespeed-1.13.35.2-stable.
+
+* Tue Nov 21 2023 AIKAWA Shigechika
+- sync w/ nginx-1.25.3 and pagespeed-1.13.35.2-stable.
+
+* Wed Aug 30 2023 AIKAWA Shigechika
+- sync w/ nginx-1.25.2 and pagespeed-1.13.35.2-stable.
+ 
 * Tue Jun 27 2023 AIKAWA Shigechika
 - sync w/ nginx-1.25.1 and pagespeed-1.13.35.2-stable.
 
