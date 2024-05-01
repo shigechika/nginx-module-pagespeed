@@ -1,4 +1,4 @@
-%define base_version 1.25.4
+%define base_version 1.25.5
 #
 %define nginx_user nginx
 %define nginx_group nginx
