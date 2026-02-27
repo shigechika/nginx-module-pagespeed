@@ -1,5 +1,19 @@
 # nginx-module-pagespeed
 
+## End of Maintenance Notice
+
+This project is no longer maintained.
+
+With CentOS 7 reaching its end of life, we have decided to retire this repository. No further updates, bug fixes, or new releases will be provided.
+
+We would like to express our sincere gratitude to everyone who has used, contributed to, and supported this project over the years. It has been a wonderful journey, and we truly appreciate your trust and involvement.
+
+Thank you for everything.
+
+---
+
+### About this project (archived)
+
 - Compatible with nginx.org repository.
 - Pagespeed Dynamic Module
 - Currently supports CentOS7 only
